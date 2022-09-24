@@ -1,4 +1,5 @@
 using API.Data;
+using API.DTOs;
 using API.Interfaces;
 using API.Models;
 using Microsoft.AspNetCore.Mvc;
@@ -36,9 +37,9 @@ public class CustomerController : BaseApiController
 
     // AddCustomer
     [HttpPost("add")]
-    public async Task<ActionResult<Customer>> AddCustomer(Customer val)
+    public async Task<ActionResult<Customer>> AddCustomer(CustomerToAddDto val)
     {
-        Customer res = await _customerRepo.Add(val);
+        Customer res = await _customerRepo.Add(SetCustomer(val));
 
         if(res != null)
         {
@@ -47,6 +48,19 @@ public class CustomerController : BaseApiController
                 address.CustomerId = res.ID;
                 await _addressRepo.Add(address);
             }
+
+            foreach(var item in val.CustomersProducts)
+            {
+                var productAssigned = new CustomersProducts
+                {
+                    ProductId = item,
+                    CustomerId = res.ID
+                };
+
+                await _context.CustomersProducts.AddAsync(productAssigned);
+            }
+
+            await _context.SaveChangesAsync();
         }
 
         return Ok(res);
@@ -71,5 +85,18 @@ public class CustomerController : BaseApiController
     public async Task<ActionResult<Customer>> DeleteCustomer(int id)
     {
         return Ok(await _customerRepo.Delete(id));
+    }
+
+    // SetCustomer
+    private Customer SetCustomer(CustomerToAddDto val)
+    {
+        return new Customer
+        {
+            FirstName = val.FirstName,
+            LastName = val.LastName,
+            Email = val.Email,
+            PhoneNumber = val.PhoneNumber,
+            Addresses = val.Addresses
+        };
     }
 }

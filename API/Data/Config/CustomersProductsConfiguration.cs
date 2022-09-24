@@ -13,10 +13,12 @@ public class CustomersProductsConfiguration : IEntityTypeConfiguration<Customers
         builder.HasOne(cp => cp.Customer)
             .WithMany(c => c.CustomersProducts)
             .HasForeignKey(cp => cp.CustomerId)
-            .IsRequired();
+            .IsRequired()
+            .OnDelete(DeleteBehavior.Cascade);
         builder.HasOne(cp => cp.Product)
             .WithMany(p => p.CustomersProducts)
             .HasForeignKey(cp => cp.ProductId)
-            .IsRequired();
+            .IsRequired()
+            .OnDelete(DeleteBehavior.Cascade);
     }
 }

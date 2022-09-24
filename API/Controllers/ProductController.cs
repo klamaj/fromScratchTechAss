@@ -1,3 +1,5 @@
+using API.Data;
+using API.DTOs;
 using API.Interfaces;
 using API.Models;
 using Microsoft.AspNetCore.Mvc;
@@ -7,8 +9,11 @@ namespace API.Controllers;
 public class ProductController : BaseApiController
 {
     private readonly IGenericRepository<Product> _productRepo;
-    public ProductController(IGenericRepository<Product> productRepo)
+    private readonly DatabaseContext _context;
+    public ProductController(IGenericRepository<Product> productRepo,
+        DatabaseContext context)
     {
+        _context = context;
         _productRepo = productRepo;
     }
 
@@ -28,9 +33,27 @@ public class ProductController : BaseApiController
 
     // AddProduct
     [HttpPost("add")]
-    public async Task<ActionResult<Product>> AddProduct(Product val)
+    public async Task<ActionResult<Product>> AddProduct(ProductToAddDto val)
     {
-        return Ok(await _productRepo.Add(val));
+        Product res = await _productRepo.Add(SetProduct(val));
+
+        if (res != null)
+        {
+            foreach(var item in val.CustomersProducts)
+            {
+                var assignedProduct = new CustomersProducts
+                {
+                    ProductId = res.ID,
+                    CustomerId = item
+                };
+
+                await _context.CustomersProducts.AddAsync(assignedProduct);
+            }
+
+            await _context.SaveChangesAsync();
+        }
+
+        return Ok(res);
     }
 
     // UpdateProduct
@@ -45,5 +68,17 @@ public class ProductController : BaseApiController
     public async Task<ActionResult<Product>> DeleteProduct(int id)
     {
         return Ok(await _productRepo.Delete(id));
+    }
+
+    // SetProduct
+    private Product SetProduct(ProductToAddDto val)
+    {
+        return new Product 
+        {
+            ProductName = val.ProductName,
+            ProductDescription = val.ProductDescription,
+            Price = val.Price,
+            ProductImagePath = val.ProductImagePath
+        };
     }
 }
