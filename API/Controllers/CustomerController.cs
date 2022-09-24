@@ -1,3 +1,4 @@
+using API.Data;
 using API.Interfaces;
 using API.Models;
 using Microsoft.AspNetCore.Mvc;
@@ -7,8 +8,15 @@ namespace API.Controllers;
 public class CustomerController : BaseApiController
 {
     private readonly IGenericRepository<Customer> _customerRepo;
-    public CustomerController(IGenericRepository<Customer> customerRepo)
+    private readonly IGenericRepository<Address> _addressRepo;
+    private readonly DatabaseContext _context;
+
+    public CustomerController(IGenericRepository<Customer> customerRepo, 
+        IGenericRepository<Address> addressRepo, 
+        DatabaseContext context)
     {
+        _context = context;
+        _addressRepo = addressRepo;
         _customerRepo = customerRepo;
     }
 
@@ -30,14 +38,32 @@ public class CustomerController : BaseApiController
     [HttpPost("add")]
     public async Task<ActionResult<Customer>> AddCustomer(Customer val)
     {
-        return Ok(await _customerRepo.Add(val));
+        Customer res = await _customerRepo.Add(val);
+
+        if(res != null)
+        {
+            foreach(var address in val.Addresses)
+            {
+                address.CustomerId = res.ID;
+                await _addressRepo.Add(address);
+            }
+        }
+
+        return Ok(res);
     }
 
     // UpdateCustomer
     [HttpPut("update")]
     public async Task<ActionResult<Customer>> UpdateCustomer(Customer val)
     {
-        return Ok(await _customerRepo.Update(val));
+        var customer = await _customerRepo.Update(val);
+
+        foreach(var item in val.Addresses)
+        {
+            await _addressRepo.Update(item);
+        }
+
+        return Ok(customer);
     }
 
     // DeleteCustomer
@@ -46,5 +72,4 @@ public class CustomerController : BaseApiController
     {
         return Ok(await _customerRepo.Delete(id));
     }
-    
 }
