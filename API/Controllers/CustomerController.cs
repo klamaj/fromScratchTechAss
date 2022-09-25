@@ -2,6 +2,7 @@ using API.Data;
 using API.DTOs;
 using API.Interfaces;
 using API.Models;
+using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 
 namespace API.Controllers;
@@ -11,11 +12,13 @@ public class CustomerController : BaseApiController
     private readonly IGenericRepository<Customer> _customerRepo;
     private readonly IGenericRepository<Address> _addressRepo;
     private readonly DatabaseContext _context;
+    private readonly IMapper _mapper;
 
     public CustomerController(IGenericRepository<Customer> customerRepo, 
         IGenericRepository<Address> addressRepo, 
-        DatabaseContext context)
+        DatabaseContext context, IMapper mapper)
     {
+        _mapper = mapper;
         _context = context;
         _addressRepo = addressRepo;
         _customerRepo = customerRepo;
@@ -23,9 +26,10 @@ public class CustomerController : BaseApiController
 
     // GetCustomersList
     [HttpGet("get")]
-    public async Task<ActionResult<IReadOnlyList<Customer>>> GetCustomersList()
+    public async Task<ActionResult<IReadOnlyList<CustomerToReturnDto>>> GetCustomersList()
     {
-        return Ok(await _customerRepo.ListAllAsync());
+        var customers = await _customerRepo.ListAllAsync();
+        return Ok(_mapper.Map<IReadOnlyList<Customer>, IReadOnlyList<CustomerToReturnDto>>(customers));
     }
 
     // GetCustomerById

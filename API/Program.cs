@@ -14,6 +14,9 @@ builder.Services.AddSwaggerGen();
 // Add DbConnection
 builder.Services.AddDBConnection(builder.Configuration);
 
+// AddAutoMapper
+builder.Services.AddAutoMapperConfiguration();
+
 // AddCors
 builder.Services.AddCorsConfiguration();
 
