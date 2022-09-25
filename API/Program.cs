@@ -14,6 +14,9 @@ builder.Services.AddSwaggerGen();
 // Add DbConnection
 builder.Services.AddDBConnection(builder.Configuration);
 
+// AddCors
+builder.Services.AddCorsConfiguration();
+
 // Set Interfaces
 builder.Services.AddScoped(typeof(IGenericRepository<>), (typeof(GenericRepository<>)));
 
@@ -27,6 +30,9 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
+
+// UseCors
+app.UseCorsConfiguration();
 
 app.UseAuthorization();
 
