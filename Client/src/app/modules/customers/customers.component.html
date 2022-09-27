@@ -1,3 +1,6 @@
+<div class="mt-3">
+    <button routerLink="/customer/new" type="button" class="btn btn-primary mb-3">Add New Customer</button>
+</div>
 <div>
     <table class="table">
         <thead class="thead-dark">
@@ -10,12 +13,12 @@
             </tr>
         </thead>
         <tbody>
-            <tr>
-                <th scope="row">1</th>
-                <td>Mark</td>
-                <td>Otto</td>
-                <td>@mdo</td>
-                <td>@mdo</td>
+            <tr [routerLink]="['customers/'+item.id]" *ngFor="let item of customers; let i = index">
+                <th scope="row">{{i+1}}</th>
+                <td>{{item.firstName}}</td>
+                <td>{{item.lastName}}</td>
+                <td>{{item.email}}</td>
+                <td>{{item.phoneNumber}}</td>
             </tr>
         </tbody>
     </table>

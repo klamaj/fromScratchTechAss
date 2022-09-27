@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { CustomerService } from 'src/app/core/services/customer.service';
+import { ICustomer } from 'src/app/shared/Interfaces/icustomer';
 
 @Component({
   selector: 'app-customers',
@@ -8,6 +9,8 @@ import { CustomerService } from 'src/app/core/services/customer.service';
 })
 export class CustomersComponent implements OnInit {
 
+  customers: ICustomer[] = [];
+
   constructor(private customerService: CustomerService) { }
 
   ngOnInit(): void {
@@ -15,8 +18,9 @@ export class CustomersComponent implements OnInit {
   }
 
   loadCustomers() {
-    this.customerService.GetCustomers().subscribe(res => {
-      console.log(res);
+    this.customerService.getCustomers().subscribe(res => {
+      // console.log(res);
+      this.customers = res;
     })
   }
 }

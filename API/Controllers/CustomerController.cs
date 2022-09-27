@@ -29,7 +29,7 @@ public class CustomerController : BaseApiController
     public async Task<ActionResult<IReadOnlyList<CustomerToReturnDto>>> GetCustomersList()
     {
         var customers = await _customerRepo.ListAllAsync();
-        return Ok(_mapper.Map<IReadOnlyList<Customer>, IReadOnlyList<CustomerToReturnDto>>(customers));
+        return Ok(customers);
     }
 
     // GetCustomerById
@@ -47,24 +47,30 @@ public class CustomerController : BaseApiController
 
         if(res != null)
         {
-            foreach(var address in val.Addresses)
+            if(val.Addresses != null) 
             {
-                address.CustomerId = res.ID;
-                await _addressRepo.Add(address);
-            }
-
-            foreach(var item in val.CustomersProducts)
-            {
-                var productAssigned = new CustomersProducts
+                foreach (var address in val.Addresses)
                 {
-                    ProductId = item,
-                    CustomerId = res.ID
-                };
-
-                await _context.CustomersProducts.AddAsync(productAssigned);
+                    address.CustomerId = res.ID;
+                    await _addressRepo.Add(address);
+                }
             }
 
-            await _context.SaveChangesAsync();
+            if(val.CustomersProducts != null)
+            {
+                foreach (var item in val.CustomersProducts)
+                {
+                    var productAssigned = new CustomersProducts
+                    {
+                        ProductId = item,
+                        CustomerId = res.ID
+                    };
+
+                    await _context.CustomersProducts.AddAsync(productAssigned);
+                }
+            }
+
+            if(val.Addresses != null || val.CustomersProducts.Length != 0) await _context.SaveChangesAsync();
         }
 
         return Ok(res);
