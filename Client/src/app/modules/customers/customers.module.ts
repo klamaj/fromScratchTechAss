@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { CustomersComponent } from './customers.component';
 import { AppRoutingModule } from 'src/app/app-routing.module';
 import { NewcustomerModule } from './newcustomer/newcustomer.module';
+import { CustomerModule } from './customer/customer.module';
 
 
 
@@ -13,11 +14,13 @@ import { NewcustomerModule } from './newcustomer/newcustomer.module';
   imports: [
     CommonModule,
     AppRoutingModule,
-    NewcustomerModule
+    NewcustomerModule,
+    CustomerModule
   ],
   exports: [
     CustomersComponent,
-    NewcustomerModule
+    NewcustomerModule,
+    CustomerModule
   ]
 })
 export class CustomersModule { }

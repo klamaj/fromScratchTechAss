@@ -14,12 +14,12 @@
             </tr>
         </thead>
         <tbody>
-            <tr [routerLink]="['customers/'+item.id]" *ngFor="let item of customers; let i = index">
-                <th scope="row">{{i+1}}</th>
-                <td>{{item.firstName}}</td>
-                <td>{{item.lastName}}</td>
-                <td>{{item.email}}</td>
-                <td>{{item.phoneNumber}}</td>
+            <tr *ngFor="let item of customers; let i = index">
+                <th scope="row" [routerLink]="['/customer/'+item.id]">{{i+1}}</th>
+                <td [routerLink]="['/customer/'+item.id]" >{{item.firstName}}</td>
+                <td [routerLink]="['/customer/'+item.id]" >{{item.lastName}}</td>
+                <td [routerLink]="['/customer/'+item.id]" >{{item.email}}</td>
+                <td [routerLink]="['/customer/'+item.id]" >{{item.phoneNumber}}</td>
                 <td><button class="btn btn-danger" (click)="removeCustomer(item.id)">Delete</button></td>
             </tr>
         </tbody>
