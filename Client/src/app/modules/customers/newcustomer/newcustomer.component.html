@@ -20,7 +20,49 @@
             <input formControlName="phone" type="tel" class="form-control" id="phone" placeholder="Enter phone">
         </div>
 
-        <button [disabled]="!customer.valid" type="submit" class="btn btn-primary">Submit</button>
+        <!-- Addresses -->
+        <div *ngIf="addresses.length != 0" class="addresses">
+            <div *ngFor="let item of addresses; let i = index">
+                <p>{{item.street}} {{item.streetNumber}}</p>
+                <p>{{item.city}}</p>
+                <p>{{item.country}}</p>
+                <p>{{item.zipCode}}</p>
+                <button (click)="removeAddress(i)" class="btn btn-danger">Remove address</button>
+            </div>
+        </div>
+
+        <!-- AddAddress -->
+        <div class="form-group">
+
+            <button type="button" class="btn btn-primary" (click)="add = (!add) ? true : false">Add address</button>
+
+            <form *ngIf="add" #f="ngForm" [formGroup]="addressForm" (ngSubmit)="addAddress(addressForm)">
+                <div class="form-group">
+                    <label for="street">Street</label>
+                    <input formControlName="street" type="text" class="form-control" id="street" placeholder="Enter street">
+                </div>
+                <div class="form-group">
+                    <label for="streetnumber">Street number</label>
+                    <input formControlName="streetNumber" type="text" class="form-control" id="streetnumber" placeholder="Enter street number">
+                </div>
+                <div class="form-group">
+                    <label for="city">City</label>
+                    <input formControlName="city" type="text" class="form-control" id="city" placeholder="Enter city">
+                </div>
+                <div class="form-group">
+                    <label for="country">Country</label>
+                    <input formControlName="country" type="text" class="form-control" id="country" placeholder="Enter country">
+                </div>
+                <div class="form-group">
+                    <label for="zipcode">ZIP Code</label>
+                    <input formControlName="zipCode" type="text" class="form-control" id="zipcode" placeholder="Enter ZIP code">
+                </div>
+                <button [disabled]="addressForm.invalid" class="btn btn-primary">Confirm address</button>
+            </form>
+            
+        </div>
+
+        <button [disabled]="customer.invalid" type="submit" class="btn btn-primary">Submit</button>
 
     </form>
 </div>

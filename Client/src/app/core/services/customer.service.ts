@@ -44,4 +44,14 @@ export class CustomerService {
   addCustomer(val: ICustomer) {
     return this.http.post<ICustomer>(this.ApiUrl + "add", val);
   }
+
+  // deleteCustomer
+  deleteCustomer(id: number) {
+    return this.http.delete<ICustomer>(this.ApiUrl + "delete/" + id);
+  }
+
+  // updateCustomer
+  updateCustomer(val: ICustomer) {
+    return this.http.put<ICustomer>(this.ApiUrl + "update", val);
+  }
 }

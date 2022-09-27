@@ -6,6 +6,6 @@ export interface ICustomer {
     lastName: string,
     email: string,
     phoneNumber: string,
-    Addresses: IAddress[] | null,
+    addresses: IAddress[] | null,
     CustomersProducts: number[] | null
 }

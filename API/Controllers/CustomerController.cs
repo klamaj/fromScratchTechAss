@@ -70,7 +70,7 @@ public class CustomerController : BaseApiController
                 }
             }
 
-            if(val.Addresses != null || val.CustomersProducts.Length != 0) await _context.SaveChangesAsync();
+            if(val.Addresses != null || val.CustomersProducts != null) await _context.SaveChangesAsync();
         }
 
         return Ok(res);

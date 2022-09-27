@@ -23,4 +23,11 @@ export class CustomersComponent implements OnInit {
       this.customers = res;
     })
   }
+
+  // removeCustomer
+  removeCustomer(id: number) {
+    this.customerService.deleteCustomer(id).subscribe(res => {
+      this.loadCustomers();
+    })
+  }
 }
